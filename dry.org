@@ -1,0 +1,82 @@
+* Inactive Records
+** AR objects can:
+*** Be created brand new with empty attributes,
+*** Come freshly loaded from the database,
+*** Have their attributes modified in memory but not yet persisted to the database,
+*** Hold invalid attributes,
+*** Have their associations preloaded from the database… Or not!
+*** Or even have new associations built in memory but not yet persisted to the database.
+
+Uncle Bob: "It creates confusion about these two very different styles of programming. A database table is a data structure. It has exposed data and no behavior… [But] many people put business rule methods in their Active Record classes; which makes them appear to be objects. This leads to a dilemma. On which side of the line does the Active Record really fall? Is it an object? Or is it a data structure?"
+
+** Value objects
+Building value objects in Ruby.
+*** Make the objects immutable. (Don’t provide attr writers or any other methods to mutate the object’s internal state.)
+*** Provide equality methods that use the object’s attributes.
+
+*** TODO :SHOW CODE
+[[https://www.icelab.com.au/notes/inactive-records-the-value-objects-your-app-deserves/][value objects]]
+
+*** Dry::Types::Struct cannot be initialized with invalid data
+*** Narrow and explicit behaviour (can expect all attributes to be present)
+*** Easy to wrap with presenters - no need to hide some behaviour from views
+*** => need to create repositories / data mappers to handle persistence and querying
+**** Data flow example:
+***** Get form params -> validate -> persist -> return to app (service) as value object
+
+** Bottom line:
+Keeping your app’s entities modelled as inactive value objects encourages you to spread your app’s “active” behaviour appropriately around a greater number of other single-responsibility objects.
+* Functional command objects
+** How do we change immutable value objects that model our domain entities?
+** Use command objects!
+** Make them lightweight and easy enough to use not only in controllers!
+** TODO :SHOW CODE
+[[https://www.icelab.com.au/notes/functional-command-objects-in-ruby/][command objects]]
+* Effective Ruby dependency injection at scale
+[[https://www.icelab.com.au/notes/effective-ruby-dependency-injection-at-scale/][link]]
+* Better code
+[[https://www.icelab.com.au/notes/better-code-with-an-inversion-of-control-container/][link]]
+** Dependency inversion principle:
+*** High-level modules should not depend on low-level modules. Both should depend on abstractions.
+*** Abstractions should not depend on details. Details should depend on abstractions.
+*** Example
+**** High-level module depends on abstraction -> can register other LowLevelModule as validate_article
+**** detail (low-level module) depends on abstraction (high-level module)
+*** Work with objects and not with classes
+*** Higher-level modules are more reusable
+** Single responsibility
+*** A class should have only one reason to change
+** Function composition (small interfaces, almost functions)
+* A change-positive Ruby web application architecture
+** [[https://www.icelab.com.au/notes/a-change-positive-ruby-web-application-architecture/][link]]
+** Rails MVC
+*** M
+**** AR responsibilities
+***** data modelling
+***** persistence
+***** validation
+***** type coercion
+***** domain logic
+***** Rails-focused gems extends things even further
+**** with ActiveRecord’s API being so broad, your entire application winds up coupled to details of your database schema
+*** C
+**** Mix http details with domain logic
+** Boundaries
+*** Be composed of many small pieces, tightly focused, loosely coupled.
+*** Offer a facility to make it simple to combine these small pieces into larger, more complex ones.
+*** Make the flow of data through your system easy to follow, by using functional objects for transformations and respecting immutability everywhere else.
+* Roda
+** [[https://www.icelab.com.au/notes/put-http-in-its-place-with-roda/][link]]
+** Ruby app first, web app second: HTTP is an IMPLEMENTATION DETAIL
+** Web app is just a series of actions that can be invoked by users
+** Route to components, ditch controllers for good
+** Handled in HTTP interface layer:
+*** request parameters
+*** authentication
+*** cookies
+*** redirect or render responses
+*** anything else HTTP-related
+** Our objects remain focused on core logic
+* ROM
+* [[https://www.icelab.com.au/notes/a-conversational-introduction-to-rom-rb/][link]]
+* [[https://www.icelab.com.au/notes/conversational-rom-rb-part-2-types-associations-and-update-commands/][link]]
